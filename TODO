@@ -11,8 +11,9 @@ Saved HTTP requests for curl, httpie
 * Minimal deps philosophy
 * Extract route
 * extract error handling
-* extract service
+* domain article type and tiny types
 * extract repository
+* extract service
 * validate
 * parse
 * delete

@@ -56,3 +56,13 @@ app.use(articlesRouter);
 ## Extracting error handlers from the application
 
 Now it's your turn. Move all the error handling code to **src/errorHandler.ts*.
+
+## Separating domain type and introducing tiny types
+
+Move the type for Article into **src/article.ts**. As a bonus we can add **tiny-types** to improve type-level domain vocabulary.
+
+```ts
+export type Tag = string;
+export type ArticleId = string;
+export type Slug = string;
+```
