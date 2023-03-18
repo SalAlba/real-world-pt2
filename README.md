@@ -210,3 +210,49 @@ We'd like to have an explicit type for the `ArticleRepository`. Try to create it
 Hints:
 * your IDE may have and option to extract existing types
 * once you extract a repository type you can delete explicit typings in the in-memory implementation
+
+## Parsing input data
+
+`createArticle` accepts ArticleInput type. Check what type we get at the method call site?
+
+Create **parseArticleInput.ts**
+```ts
+import { z } from "zod";
+
+export const ArticleInput = z.object({
+  title: z.string().min(1),
+  body: z.string(),
+  description: z.string(),
+  tagList: z.array(z.string()),
+});
+export type ArticleInput = z.infer<typeof ArticleInput>;
+```
+
+Here's how to use it:
+```ts
+import {ArticleInput} from "./parseArticleInput";
+
+const input = ArticleInput.parse(req.body.article);
+```
+What are the types now? 
+
+Parsing libraries are much better than validation libraries because parsers give us **compile time type checking based on runtime schemas**.
+
+## Handling parsing errors
+
+Try adding this test case to **src/app.test.ts**
+```ts
+    const failedArticle = await createArticle(
+    request,
+    // @ts-ignore
+    {
+        title: "",
+    },
+    422
+);
+
+assert.deepStrictEqual(failedArticle.body.errors.length, 4);
+```
+Our contract for invalid input data will be 422 HTTP status code and input parsing errors from zod.
+
+Try to think how we can handle this error. Where would you put the error handling logic?

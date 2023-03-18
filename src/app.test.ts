@@ -11,13 +11,13 @@ type ArticleInput = {
 };
 type Request = ReturnType<typeof httpClient>;
 
-const createArticle = (request: Request, article: ArticleInput) =>
+const createArticle = (request: Request, article: ArticleInput, status = 200) =>
   request
     .post("/api/articles")
     .send({
       article,
     })
-    .expect(200);
+    .expect(status);
 
 const updateArticle = (request: Request, slug: string, article: ArticleInput) =>
   request
@@ -84,5 +84,16 @@ describe("Conduit", function () {
         slug: "the-title-updated",
       }
     );
+
+    const failedArticle = await createArticle(
+      request,
+      // @ts-ignore
+      {
+        title: "",
+      },
+      422
+    );
+
+    assert.deepStrictEqual(failedArticle.body.errors.length, 4);
   });
 });

@@ -1,4 +1,4 @@
-import { Article } from "./article";
+import { Article, ArticleRepository } from "./article";
 import makeSlug from "slug";
 import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
 import { IdGenerator } from "./idGenerator";
@@ -11,10 +11,7 @@ export type ArticleInput = {
 };
 
 export const createArticle =
-  (
-    articleRepository: ReturnType<typeof inMemoryArticleRepository>,
-    articleIdGenerator: IdGenerator
-  ) =>
+  (articleRepository: ArticleRepository, articleIdGenerator: IdGenerator) =>
   async (input: ArticleInput) => {
     const now = new Date();
     const article: Article = {
