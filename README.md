@@ -28,3 +28,25 @@ To understand lightweight frameworks like *express* is let's unpack the **pipes 
 
 ![images/pipes_and_filters.png](images/pipes_and_filters.png)
 
+## Extracting routing from the application
+
+Create a new file **src/articlesRouter.ts** and move all the articles related code to the file.
+Here's some tips how to get started.
+
+```ts
+import {Router} from "express";
+
+export const articlesRouter = Router();
+
+articlesRouter.post("/api/articles", async (req, res, next) => {
+});
+```
+
+In **src/app.ts** you can include the router like this:
+```ts
+import {articlesRouter} from "./articlesRouter";
+
+app.use(articlesRouter);
+```
+
+## Extracting error handlers from the application

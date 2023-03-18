@@ -8,7 +8,7 @@ Learning concepts:
 
 Saved HTTP requests for curl, httpie
 
-* Miinimal deps philosophy
+* Minimal deps philosophy
 * Extract route
 * extract error handling
 * extract service
