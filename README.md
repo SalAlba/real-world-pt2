@@ -1,5 +1,8 @@
 # Node.js application architecture without magic
 
+In this workshop we'll be building parts of the backend for the [Real-World App project](https://github.com/gothinkster/realworld).
+
+You can check the full app with UI and backend here: https://hyperapp.netlify.app/
 
 ## Using minimal scripts and dependencies
 
@@ -274,6 +277,119 @@ Our contract for invalid input data will be 422 HTTP status code and input parsi
 
 Try to think how we can handle this error. Where would you put the error handling logic?
 
-## Extracting remaining application services/use cases/workflows
+## Extracting remaining application service/use cases/workflows
 
-Extract `updateArticle` and `readArticle` workflows.
+Extract `updateArticle` workflow based on what we've learned previously.
+
+## Starting a database
+
+Time to persist our articles in a real database.
+
+Here's a helpful Docker command to spin up postgres locally:
+```dockerfile
+docker run -e POSTGRES_PASSWORD=secret \
+  -e POSTGRES_USER=user -e POSTGRES_DB=conduit \
+  --network conduit --name postgres postgres
+```
+
+Try to connect to the DB with a client app (e.g. pgAdmin).
+
+## Setting up DB migrations
+
+Create `migrate-to-latest.ts` file:
+
+```typescript
+import * as path from "path";
+import { promises as fs } from "fs";
+import {
+  Kysely,
+  Migrator,
+  PostgresDialect,
+  FileMigrationProvider,
+} from "kysely";
+import { Pool } from "pg";
+
+async function migrateToLatest() {
+  const db = new Kysely({
+    dialect: new PostgresDialect({
+      pool: new Pool({
+        connectionString: process.env.DATABASE_URL,
+      }),
+    }),
+  });
+
+  const migrator = new Migrator({
+    db,
+    provider: new FileMigrationProvider({
+      fs,
+      path,
+      migrationFolder: path.join(__dirname, "migrations"),
+    }),
+  });
+
+  const { error, results } = await migrator.migrateToLatest();
+
+  results?.forEach((it) => {
+    if (it.status === "Success") {
+      console.log(`migration "${it.migrationName}" was executed successfully`);
+    } else if (it.status === "Error") {
+      console.error(`failed to execute migration "${it.migrationName}"`);
+    }
+  });
+
+  if (error) {
+    console.error("failed to migrate");
+    console.error(error);
+    process.exit(1);
+  }
+
+  await db.destroy();
+}
+
+migrateToLatest();
+```
+
+### Creating our first migration
+
+Here's the tables we want to create:
+![./images/tables.png](./images/tables.png)
+
+Create **src/migrations/0001_create_article.ts**
+
+```typescript
+import { Kysely, sql } from "kysely";
+
+export async function up(db: Kysely<any>): Promise<void> {
+    await db.schema
+        .createTable("article")
+        .addColumn("id", "uuid", (col) => col.primaryKey())
+        .addColumn("createdAt", "timestamp", (col) => col.notNull())
+        .addColumn("updatedAt", "timestamp", (col) => col.notNull())
+        .addColumn("slug", "text", (col) => col.notNull())
+        .addColumn("title", "text", (col) => col.notNull())
+        .addColumn("body", "text", (col) => col.notNull())
+        .addColumn("description", "text", (col) => col.notNull())
+        .execute();
+
+    await db.schema
+        .createTable("tags")
+        .addColumn("name", "text", (col) => col.notNull())
+        .addColumn("articleId", "uuid", (col) =>
+            col.references("article.id").notNull().onDelete("cascade")
+        )
+        .addPrimaryKeyConstraint("tags_primary_key", ["name", "articleId"])
+        .execute();
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+    await db.schema.dropTable("article").execute();
+    await db.schema.dropTable("tags").execute();
+}
+```
+
+Let's analyze what we're creating here.
+
+Finally let's apply the migrations:
+```
+"migrate:latest": "DATABASE_URL=postgres://user:secret@localhost:5432/conduit ts-node src/migrate-to-latest.ts"
+```

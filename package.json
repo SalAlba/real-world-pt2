@@ -2,7 +2,8 @@
   "scripts": {
     "start": "ts-node src/server.ts",
     "test": "mocha --exit 'src/**/*.test.ts'",
-    "format": "prettier --write src/**"
+    "format": "prettier --write src/**",
+    "migrate:latest": "DATABASE_URL=postgres://user:secret@localhost:5432/conduit ts-node src/migrate-to-latest.ts"
   },
   "devDependencies": {
     "@types/bcryptjs": "2.4.2",

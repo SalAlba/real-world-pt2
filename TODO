@@ -17,9 +17,8 @@ Saved HTTP requests for curl, httpie
 * extract service
 * clock
 * parse
+* update workflow
 
-* parse read model, robustness principle
-* delete
 * db migration
 * generate types
 * sql repository
@@ -27,5 +26,12 @@ Saved HTTP requests for curl, httpie
 * add user login by trainer
 * add middleware
 * read model
+* parse read model, robustness principle
 * favorites - separate models
 * transactions
+
+
+Prerequisites:
+* Node.js 16+
+* postgres (info how to run from docker)
+* postgres client (I will use pgAgmin)
