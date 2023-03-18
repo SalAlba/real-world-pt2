@@ -1,0 +1,28 @@
+Learning concepts:
+* tiny types
+* app service
+* repository
+* parse don't validate
+* chicago test
+* kysely
+
+Saved HTTP requests for curl, httpie
+
+* Miinimal deps philosophy
+* Extract route
+* extract error handling
+* extract service
+* extract repository
+* validate
+* parse
+* delete
+* db migration
+* generate types
+* sql repository
+* DI
+* composition root for module
+* add user login by trainer
+* add middleware
+* read model
+* favorites - separate models
+* transactions
