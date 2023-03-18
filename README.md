@@ -200,11 +200,35 @@ Here's some TS typing hints:
 * Introduce `IdGenerator` type
 * Introduce `ArticleInput` type. It should not be the same as the `Article` type.
 
+### Big lesson: curried functions over classes
+
+Most enterprise applications use classes as a main building block. A common pattern is to inject dependencies as constructor arguments
+and to pass actual data as method arguments.
+```ts
+class MyClass {
+    constructor(deps) {
+    }
+    action(data) {}
+}
+```
+A much simpler approach is to replace classes with curring.
+```ts
+const action = (deps) => (data) => {}
+```
+Every action from your class becomes a separate action with curried dependencies.
+
 ## Understanding what a unit is in unit test
 
 Unpacking the difference between **unit of code** and **unit of bahavior**.
 
-![./images/unit.png](./images/unit.png
+![./images/unit.png](./images/unit.png)
+
+Many people stick to London/mockist school of testing with mocks. Very often it leads to tests that make refactoring difficult as those tests
+reflect the structure of the code under test.
+We've just seen a Chicago school of testing (no mocks). Application actions are our unit of behavior under test. This unit of behavior consists of
+the application service method talking to in-memory repositories. So a few units of code make up a unit of behavior.
+Some people would argue that it's an integration test but since we're not touching any I/O and those tests are extremely fast
+I'd call them unit tests.
 
 ## Deciding where to put the repository interface type
 
@@ -425,3 +449,34 @@ export const sqlArticleRepository = (db: Kysely<DB>): ArticleRepository => {
 };
 ```
 From now let's live code the implementation together paying attention to auto-completion support in the IDE.
+
+## Integration testing SQL repository
+
+First we need to create a db instance.
+
+**src/db.ts**
+```typescript
+import { Kysely, PostgresDialect } from "kysely";
+import { DB } from "./dbTypes";
+import { Pool } from "pg";
+
+export const createDb = (connectionString: string) =>
+    new Kysely<DB>({
+        dialect: new PostgresDialect({
+            pool: new Pool({
+                connectionString,
+            }),
+        })
+    });
+```
+
+Copy-paste in-memory repository test and try to test our new SQL repository.
+
+Some hints:
+* for SQL variant, article id needs to be UUID e.g. "200db642-a014-46dc-b678-fc2777b4b301"
+* clean DB before each test (```await db.deleteFrom("article").execute();```). Why is it better to clean before?
+
+## Creating contract for repository
+
+We had to create almost identical tests twice. Try to remove duplication between repositories and try to introduce a contract
+for what it takes to be an article repository. This contract should serve us well if we decide to implement another variant e.g. MongoDB.
