@@ -206,3 +206,7 @@ Unpacking the difference between **unit of code** and **unit of bahavior**.
 ## Deciding where to put the repository interface type
 
 We'd like to have an explicit type for the `ArticleRepository`. Try to create it and decide where this type should live.
+
+Hints:
+* your IDE may have and option to extract existing types
+* once you extract a repository type you can delete explicit typings in the in-memory implementation

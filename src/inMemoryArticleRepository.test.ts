@@ -1,9 +1,9 @@
-import {Article} from "./article";
-import {inMemoryArticleRepository} from "./inMemoryArticleRepository";
+import { Article } from "./article";
+import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
 import assert from "assert";
 
-describe('In memory article repository', function () {
-  it('should create articles', async function () {
+describe("In memory article repository", function () {
+  it("should create articles", async function () {
     const article: Article = {
       id: "id",
       slug: "the-title",
@@ -12,7 +12,7 @@ describe('In memory article repository', function () {
       tagList: ["tag1", "tag2"],
       description: "description",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
     const repository = inMemoryArticleRepository();
 
@@ -23,7 +23,7 @@ describe('In memory article repository', function () {
     assert.deepStrictEqual(result, article);
   });
 
-  it('should update articles', async function () {
+  it("should update articles", async function () {
     const article: Article = {
       id: "id",
       slug: "the-title",
@@ -32,24 +32,23 @@ describe('In memory article repository', function () {
       tagList: ["tag1", "tag2"],
       description: "description",
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
     const repository = inMemoryArticleRepository();
 
     await repository.create(article);
-    await repository.update({...article, body: 'updated body'});
+    await repository.update({ ...article, body: "updated body" });
 
     const result = await repository.findBySlug("the-title");
 
-    assert.deepStrictEqual(result!.body, 'updated body');
+    assert.deepStrictEqual(result!.body, "updated body");
   });
 
-  it('should return null when article not found', async function () {
+  it("should return null when article not found", async function () {
     const repository = inMemoryArticleRepository();
 
     const result = await repository.findBySlug("the-title");
 
     assert.deepStrictEqual(result, null);
   });
-
 });
