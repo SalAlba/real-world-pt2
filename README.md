@@ -403,3 +403,25 @@ In order to write type-safe queries we need to generate DB types.
 ```
 
 Let's analyze the file that was generated.
+
+## Implementing SQL Article Repository
+
+Create **sqlArticleRepository.ts** with the following starter code:
+```typescript
+import {ArticleRepository} from "./article";
+import {Kysely} from "kysely";
+import {DB} from "./dbTypes";
+
+export const sqlArticleRepository = (db: Kysely<DB>): ArticleRepository => {
+
+  return {
+    async create(article) {
+    },
+    async update(article) {
+    },
+    async findBySlug(slug) {
+    },
+  };
+};
+```
+From now let's live code the implementation together paying attention to auto-completion support in the IDE.
