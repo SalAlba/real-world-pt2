@@ -28,6 +28,10 @@ To understand lightweight frameworks like *express* is let's unpack the **pipes 
 
 ![images/pipes_and_filters.png](images/pipes_and_filters.png)
 
+The interesting part in express is how error handlers are added to the end of the pipeline. Not-found handler usually goes as second last.
+And the generic catch-all handler goes at the very end. Any next() invocations or errors thrown in previous handlers end up in the 
+catch-all handler.
+
 ## Extracting routing from the application
 
 Create a new file **src/articlesRouter.ts** and move all the articles related code to the file.
@@ -50,3 +54,5 @@ app.use(articlesRouter);
 ```
 
 ## Extracting error handlers from the application
+
+Now it's your turn. Move all the error handling code to **src/errorHandler.ts*.
