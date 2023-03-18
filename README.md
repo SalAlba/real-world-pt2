@@ -349,7 +349,7 @@ async function migrateToLatest() {
 migrateToLatest();
 ```
 
-### Creating our first migration
+## Creating our first migration
 
 Here's the tables we want to create:
 ![./images/tables.png](./images/tables.png)
@@ -393,3 +393,13 @@ Finally let's apply the migrations:
 ```
 "migrate:latest": "DATABASE_URL=postgres://user:secret@localhost:5432/conduit ts-node src/migrate-to-latest.ts"
 ```
+
+## Generating TS types from DB
+
+In order to write type-safe queries we need to generate DB types.
+
+```
+"generate:types": "DATABASE_URL=postgres://user:secret@localhost:5432/conduit kysely-codegen --out-file=src/dbTypes.ts"
+```
+
+Let's analyze the file that was generated.
