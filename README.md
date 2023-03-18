@@ -135,6 +135,74 @@ describe('In memory article repository', function () {
 });
 ```
 
-## Using repository in code
+## Replacing variable with repository
 
 Switch `articles` variable with the `articleRepository`.
+
+## Introducing application service methods
+
+Our router should not be concerned with making slugs or generating ids. Instead of a typical application service object
+we can introduce a method for handling article creation use case.
+
+```ts
+articlesRouter.post("/api/articles", async (req, res, next) => {
+    const input = req.body.article;
+
+    const article = await createArticle(articleRepository, articleIdGenerator)(input);
+
+    res.json({ article: omit(article, "id") });
+});
+```
+
+To make it easier to implement `createArticle` use case I prepared this test to drive your production code:
+
+**src/createArticle.test.ts**
+```ts
+import {createArticle} from "./createArticle";
+import assert from "assert";
+import {inMemoryArticleRepository} from "./inMemoryArticleRepository";
+import omit from "lodash.omit";
+
+describe("Create article", function () {
+    it("happy path", async function () {
+        const articleRepository = inMemoryArticleRepository();
+        const idGenerator = () => "articleId";
+        const create = createArticle(articleRepository, idGenerator);
+
+        const article = await create(
+            {
+                title: "The title",
+                body: "body",
+                description: "",
+                tagList: ["tag1", "tag2"],
+            }
+        );
+
+        const fetchedArticle = await articleRepository.findBySlug(article.slug);
+
+        assert.deepStrictEqual(omit(fetchedArticle, 'createdAt', 'updatedAt'), {
+            body: "body",
+            description: "",
+            id: "articleId",
+            slug: "the-title",
+            tagList: ["tag1", "tag2"],
+            title: "The title",
+        });
+    });
+
+});
+```
+Here's some TS typing hints:
+* To get article repository type for now you can use: `ReturnType<typeof inMemoryArticleRepository>`
+* Introduce `IdGenerator` type
+* Introduce `ArticleInput` type. It should not be the same as the `Article` type.
+
+## Understanding what a unit is in unit test
+
+Unpacking the difference between **unit of code** and **unit of bahavior**.
+
+![./images/unit.png](./images/unit.png
+
+## Deciding where to put the repository interface type
+
+We'd like to have an explicit type for the `ArticleRepository`. Try to create it and decide where this type should live.

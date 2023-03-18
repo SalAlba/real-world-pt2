@@ -6,6 +6,7 @@ import merge from "lodash.merge";
 import {incrementIdGenerator} from "./incrementIdGenerator";
 import {Article} from "./article";
 import {inMemoryArticleRepository} from "./inMemoryArticleRepository";
+import {createArticle} from "./createArticle";
 
 export const articlesRouter = Router();
 
@@ -15,18 +16,7 @@ const articleRepository = inMemoryArticleRepository();
 articlesRouter.post("/api/articles", async (req, res, next) => {
     const input = req.body.article;
 
-    const now = new Date();
-    const article: Article = {
-        body: input.body,
-        description: input.description,
-        tagList: input.tagList,
-        title: input.title,
-        slug: makeSlug(input.title),
-        id: articleIdGenerator(),
-        createdAt: now,
-        updatedAt: now,
-    };
-    await articleRepository.create(article);
+    const article = await createArticle(articleRepository, articleIdGenerator)(input);
 
     res.json({ article: omit(article, "id") });
 });
