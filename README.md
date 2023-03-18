@@ -211,6 +211,20 @@ Hints:
 * your IDE may have and option to extract existing types
 * once you extract a repository type you can delete explicit typings in the in-memory implementation
 
+## Making dates testable
+
+A good heuristic of a testable codebase is only one occurance of `new Date()` in the entire codebase.
+In the previous test we had to omit `createdAt` and `updatedAt` since they are not testable. Let's fix it.
+
+Let's create **clock.ts**
+```ts
+export type Clock = () => Date;
+export const now = () => new Date();
+```
+This is our production implementation of current date/time. We can swap this for unit testing purposes. 
+
+Update our **createArticle.test.ts** and inject a fixed date/time clock so that we can skip the omit part.
+
 ## Parsing input data
 
 `createArticle` accepts ArticleInput type. Check what type we get at the method call site?

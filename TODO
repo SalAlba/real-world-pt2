@@ -15,7 +15,6 @@ Saved HTTP requests for curl, httpie
 * tdd repository
 * use repository
 * extract service
-* validate
 * parse
 * delete
 * db migration
