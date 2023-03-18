@@ -12,7 +12,8 @@ Saved HTTP requests for curl, httpie
 * Extract route
 * extract error handling
 * domain article type and tiny types
-* extract repository
+* tdd repository
+* use repository
 * extract service
 * validate
 * parse

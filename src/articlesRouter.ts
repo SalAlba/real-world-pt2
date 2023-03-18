@@ -5,11 +5,12 @@ import {NotFoundError} from "./NotFoundError";
 import merge from "lodash.merge";
 import {incrementIdGenerator} from "./incrementIdGenerator";
 import {Article} from "./article";
+import {inMemoryArticleRepository} from "./inMemoryArticleRepository";
 
 export const articlesRouter = Router();
 
 const articleIdGenerator = incrementIdGenerator(String);
-const articles: Record<string, Article> = {};
+const articleRepository = inMemoryArticleRepository();
 
 articlesRouter.post("/api/articles", async (req, res, next) => {
     const input = req.body.article;
@@ -25,7 +26,7 @@ articlesRouter.post("/api/articles", async (req, res, next) => {
         createdAt: now,
         updatedAt: now,
     };
-    articles[article.id] = article;
+    await articleRepository.create(article);
 
     res.json({ article: omit(article, "id") });
 });
@@ -33,9 +34,7 @@ articlesRouter.post("/api/articles", async (req, res, next) => {
 articlesRouter.put("/api/articles/:slug", async (req, res, next) => {
     const articleInput = req.body.article;
     const slug = req.params.slug;
-    const existingArticle = Object.values(articles).find(
-        (article) => article.slug === slug
-    );
+    const existingArticle = await articleRepository.findBySlug(slug);
     if (!existingArticle) {
         throw new NotFoundError(`Article with slug ${slug} does not exist`);
     }
@@ -44,16 +43,14 @@ articlesRouter.put("/api/articles/:slug", async (req, res, next) => {
     article.updatedAt = now;
     article.slug = makeSlug(article.title);
 
-    articles[article.id] = article;
+    await articleRepository.update(article);
     res.json({ article: omit(article, "id") });
 });
 
 articlesRouter.get("/api/articles/:slug", async (req, res, next) => {
     const slug = req.params.slug;
 
-    const existingArticle = Object.values(articles).find(
-        (article) => article.slug === slug
-    );
+    const existingArticle = await articleRepository.findBySlug(slug);
     if (!existingArticle) {
         throw new NotFoundError(`Article with slug ${slug} does not exist`);
     }

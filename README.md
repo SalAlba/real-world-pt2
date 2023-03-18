@@ -136,3 +136,5 @@ describe('In memory article repository', function () {
 ```
 
 ## Using repository in code
+
+Switch `articles` variable with the `articleRepository`.
