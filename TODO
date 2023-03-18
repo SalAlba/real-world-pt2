@@ -15,12 +15,14 @@ Saved HTTP requests for curl, httpie
 * tdd repository
 * use repository
 * extract service
+* clock
 * parse
+
+* parse read model, robustness principle
 * delete
 * db migration
 * generate types
 * sql repository
-* DI
 * composition root for module
 * add user login by trainer
 * add middleware

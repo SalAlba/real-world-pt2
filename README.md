@@ -250,7 +250,10 @@ const input = ArticleInput.parse(req.body.article);
 ```
 What are the types now? 
 
+Go and update `createArticle.ts` to use the ArticleInput from zod. 
+
 Parsing libraries are much better than validation libraries because parsers give us **compile time type checking based on runtime schemas**.
+In modern software development we don't have to write those DTOs by hand.
 
 ## Handling parsing errors
 
@@ -270,3 +273,7 @@ assert.deepStrictEqual(failedArticle.body.errors.length, 4);
 Our contract for invalid input data will be 422 HTTP status code and input parsing errors from zod.
 
 Try to think how we can handle this error. Where would you put the error handling logic?
+
+## Extracting remaining application services/use cases/workflows
+
+Extract `updateArticle` and `readArticle` workflows.

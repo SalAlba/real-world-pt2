@@ -3,13 +3,7 @@ import makeSlug from "slug";
 import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
 import { IdGenerator } from "./idGenerator";
 import { Clock } from "./clock";
-
-export type ArticleInput = {
-  body: string;
-  description: string;
-  tagList: string[];
-  title: string;
-};
+import {ArticleInput} from "./parseArticleInput";
 
 export const createArticle =
   (
