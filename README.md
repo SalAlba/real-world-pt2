@@ -675,6 +675,8 @@ Here we have a singleton article repository that we inject to get a singleton cr
 
 To support transactions we need to create a new mini graph of objects for each application service method.
 
+![./images/transactions.png](./images/transactions.png)
+
 First go to **appCompositionRoot.ts** and inject transaction builder
 ```typescript
   const articleActions = db
