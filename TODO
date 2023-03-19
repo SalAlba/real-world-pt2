@@ -30,17 +30,17 @@ Saved HTTP requests for curl, httpie
 * clean DB
 * stop db
 * feature driven arch
-* favorites - separate models
+* optimistic concurrency
+* transactions
+* favorites - separate models - emit event created
 * read model
 * parse read model, robustness principle
-* transactions
 * hypermedia
 * business rules
 * event log
 * list all tags behind a feature flag
 * read model articles by tag, global
 * domain logic: fav articles longer than 100 chars and with at least one tag
-* optimistic concurrency
 * GH action
 * Dockerfile
 

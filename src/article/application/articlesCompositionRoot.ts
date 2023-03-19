@@ -5,16 +5,33 @@ import { inMemoryArticleRepository } from "../infrastructure/inMemoryArticleRepo
 import { createArticle } from "./createArticle";
 import { now } from "../../shared/clock";
 import { updateArticle } from "./updateArticle";
-import { Kysely } from "kysely";
+import { Kysely, Transaction } from "kysely";
 import { DB } from "../../dbTypes";
+import { WithTx } from "../../shared/sqlTransaction";
 
-export const sqlArticlesCompositionRoot = (db: Kysely<DB>) => {
-  const articleIdGenerator = uuidGenerator;
+const create = (db: Transaction<DB>) => {
   const articleRepository = sqlArticleRepository(db);
-  const create = createArticle(articleRepository, articleIdGenerator, now);
-  const update = updateArticle(articleRepository, now);
 
-  return { create, update, articleRepository };
+  return createArticle(articleRepository, uuidGenerator, now);
+};
+
+const update = (db: Transaction<DB>) => {
+  const articleRepository = sqlArticleRepository(db);
+
+  return updateArticle(articleRepository, now);
+};
+
+export const sqlArticlesCompositionRoot = (
+  db: Kysely<DB>,
+  withTxDb: WithTx<DB>
+) => {
+  const articleRepository = sqlArticleRepository(db);
+
+  return {
+    create: withTxDb(create),
+    update: withTxDb(update),
+    articleRepository,
+  };
 };
 
 export const inMemoryArticlesCompositionRoot = () => {

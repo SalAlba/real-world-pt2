@@ -627,3 +627,94 @@ DB state after a test run.
 Our **app.ts** is accumulating logic for building dependencies at the high level. Let's extract those into another composition
 root. 
 
+## Introducing transactions
+
+Our SQL code is adding data into two database tables. We could group them into a transaction. We want our transactions to wrap
+the application service. 
+
+Create a file **shared/sqlTransaction.ts**
+```typescript
+import { Kysely, Transaction } from "kysely";
+
+export type WithTx<D> = ReturnType<typeof transactional<D>>;
+
+export const transactional =
+    <D>(db: Kysely<D>) =>
+        <A extends any[], R>(
+            fn: (tx: Transaction<D>) => (...args: A) => Promise<R>
+        ) =>
+            (...args: A): Promise<R> => {
+                return db.transaction().execute((trx) => fn(trx)(...args));
+            };
+```
+To make it easier to read here's a JS version:
+```javascript
+export const transactional =
+  (db) =>
+  (fn) =>
+  (...args) => {
+    return db.transaction().execute((trx) => fn(trx)(...args));
+  };
+```
+* db is a regular DB instance
+* fn is a factory function that expects a DB transaction and returns an application service method with any number of args and returning async value
+* the last function is a function that is a decorator for the original application service method. It accepts any number of args to
+be a decorator for any application service method. Inside the body it creates a new transaction on each invocation, injects the transaction
+to the factory fn function and calls the result with the args.
+
+## Using transactions
+
+Currently in our system every application service method is a singleton and is created once at the application startup time.
+
+```typescript
+  const articleRepository = sqlArticleRepository(db);
+  const create = createArticle(articleRepository, articleIdGenerator, now);
+  const update = updateArticle(articleRepository, now);
+```
+Here we have a singleton article repository that we inject to get a singleton create and update methods.
+
+To support transactions we need to create a new mini graph of objects for each application service method.
+
+First go to **appCompositionRoot.ts** and inject transaction builder
+```typescript
+  const articleActions = db
+    ? sqlArticlesCompositionRoot(db, transactional(db))
+    : inMemoryArticlesCompositionRoot();
+```
+
+Then go to **src/articles/application/articlesCompositionRoot.ts**
+```typescript
+const create = (db: Transaction<DB>) => {
+  const articleRepository = sqlArticleRepository(db);
+
+  return createArticle(articleRepository, uuidGenerator, now);
+};
+
+const update = (db: Transaction<DB>) => {
+  const articleRepository = sqlArticleRepository(db);
+
+  return updateArticle(articleRepository, now);
+};
+```
+`create` and `update` are not singletons anymore, but factory functions that accept a current request scope transaction and
+return transactional service methods.
+
+Update the usage of those functions:
+```typescript
+export const sqlArticlesCompositionRoot = (
+  db: Kysely<DB>,
+  withTxDb: WithTx<DB>
+) => {
+  const articleRepository = sqlArticleRepository(db);
+
+  return {
+    create: withTxDb(create),
+    update: withTxDb(update),
+    articleRepository,
+  };
+};
+```
+`withTxDb` will create the request scope for each invocation of `create/update` and inject a new transaction on each request.
+After passing current `tx` to the factory functions we'll get transactional `create` and `update`.
+
+
