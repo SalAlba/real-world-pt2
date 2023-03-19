@@ -304,6 +304,7 @@ Try to think how we can handle this error. Where would you put the error handlin
 ## Extracting remaining application service/use cases/workflows
 
 Extract `updateArticle` workflow based on what we've learned previously.
+The input type for this action should make all fields optional. Only the fields that are present will be updated.
 
 ## Starting a database
 

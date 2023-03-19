@@ -3,11 +3,11 @@ import makeSlug from "slug";
 import { Clock } from "../../shared/clock";
 import { NotFoundError } from "../../error/NotFoundError";
 import merge from "lodash.merge";
-import { ArticleInput } from "./parseArticleInput";
+import { UpdateArticleInput } from "./parseArticleInput";
 
 export type UpdateArticle = (
   slug: Slug,
-  articleInput: ArticleInput
+  articleInput: UpdateArticleInput
 ) => Promise<Article>;
 export const updateArticle =
   (articleRepository: ArticleRepository, clock: Clock): UpdateArticle =>

@@ -1,10 +1,13 @@
 import { Router } from "express";
 import omit from "lodash.omit";
 import { NotFoundError } from "../../error/NotFoundError";
-import { ArticleInput } from "../application/parseArticleInput";
+import {
+  ArticleInput,
+  UpdateArticleInput,
+} from "../application/parseArticleInput";
 import { CreateArticle } from "../application/createArticle";
-import { UpdateArticle } from "../application/updateArticle";
 import { ArticleRepository } from "../domain/article";
+import { UpdateArticle } from "../application/updateArticle";
 
 export const createArticlesRouter = ({
   create,
@@ -26,7 +29,7 @@ export const createArticlesRouter = ({
   });
 
   articlesRouter.put("/api/articles/:slug", async (req, res, next) => {
-    const articleInput = req.body.article;
+    const articleInput = UpdateArticleInput.parse(req.body.article);
     const slug = req.params.slug;
 
     const article = await update(slug, articleInput);
