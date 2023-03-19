@@ -27,7 +27,7 @@ What do you think about test and production code sitting next to each other? Hav
 
 Now that you've seen the application behavior described as tests go to the production code and check what it's doing.
 
-To understand lightweight frameworks like *express* is let's unpack the **pipes and filters architecture**
+To understand lightweight frameworks like `express` is let's unpack the **pipes and filters architecture**
 
 ![images/pipes_and_filters.png](images/pipes_and_filters.png)
 
@@ -58,7 +58,7 @@ app.use(articlesRouter);
 
 ## Extracting error handlers from the application
 
-Now it's your turn. Move all the error handling code to **src/errorHandler.ts*.
+Now it's your turn. Move all the error handling code to **src/errorHandler.ts**.
 
 ## Separating domain type and introducing tiny types
 
@@ -510,11 +510,11 @@ import { IdGenerator } from "./idGenerator";
 
 export const uuidGenerator: IdGenerator = uuidv4;
 ```
-Inject this provide in **src/articlesRouter.ts** depending on the DATABASE_URL config.
+Inject this provide rin **src/articlesRouter.ts** depending on the DATABASE_URL config.
 
 ## Reading env vars from file
 
-Currently we're updating the **package.json** scripts with env vars. But it's not very scalable approach.
+Currently, we're updating the **package.json** scripts with env vars. But it's not very scalable approach.
 
 Create **.env**
 ```
@@ -535,7 +535,7 @@ configuration file.
 
 ## Modelling config
 
-Currently `process.env` is spread across the entire codebase. We'd like to centralize config setting at the entry point to our application
+Currently, `process.env` is spread across the entire codebase. We'd like to centralize config setting at the entry point to our application
 since config will be used everywhere. As an extra benefit we'd like to parse the config at the startup time the same way we 
 parse request body in our controllers/routers.
 
@@ -664,7 +664,7 @@ to the factory fn function and calls the result with the args.
 
 ## Using transactions
 
-Currently in our system every application service method is a singleton and is created once at the application startup time.
+Currently, in our system every application service method is a singleton and is created once at the application startup time.
 
 ```typescript
   const articleRepository = sqlArticleRepository(db);
@@ -719,4 +719,7 @@ export const sqlArticlesCompositionRoot = (
 `withTxDb` will create the request scope for each invocation of `create/update` and inject a new transaction on each request.
 After passing current `tx` to the factory functions we'll get transactional `create` and `update`.
 
+## Decinding where to put favorites count
 
+If you check https://hyperapp.netlify.app/ there's a favorite/unfavorite icon. In our  simplified version we don't track
+who liked the article, just the total count. Where would you store the total count of favorites for an article?

@@ -9,8 +9,9 @@ export const createApp = (config: Config) => {
   app.use(cors());
   app.use(express.json());
 
-  const { articlesRouter, clean } = appCompositionRoot(config);
+  const { articlesRouter, favoritesRouter, clean } = appCompositionRoot(config);
   app.use(articlesRouter);
+  app.use(favoritesRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);
 

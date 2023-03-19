@@ -33,16 +33,18 @@ Saved HTTP requests for curl, httpie
 * optimistic concurrency
 * transactions
 * favorites - separate models - emit event created
-* read model
+* internal read model for favorites
+* read model single article with favorites
+* read model all articles
 * parse read model, robustness principle
-* hypermedia
+* PRG pattern and redirects
+* list all tags behind a feature flag
+* hypermedia, centralized links
 * business rules
 * event log
-* list all tags behind a feature flag
-* read model articles by tag, global
 * domain logic: fav articles longer than 100 chars and with at least one tag
 * GH action
-* Dockerfile
+* Dockerfile (https://nodejs.org/en/docs/guides/nodejs-docker-webapp)
 
 
 Prerequisites:
@@ -53,3 +55,4 @@ Prerequisites:
 TODO:
 * prepare links to files with longer content
 * send prerequistes list
+* set mocha options with exit

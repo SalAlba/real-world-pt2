@@ -30,7 +30,30 @@ const updateArticle = (request: Request, slug: string, article: ArticleInput) =>
 const getArticle = (request: Request, slug: string) =>
   request.get(`/api/articles/${slug}`).expect(200);
 
+const favoriteArticle = (request: Request, slug: string) =>
+  request.post(`/api/articles/${slug}/favorite`).expect(204);
+const unfavoriteArticle = (request: Request, slug: string) =>
+  request.delete(`/api/articles/${slug}/favorite`).expect(204);
+
 describe("Conduit", function () {
+  it("Favorite article", async function () {
+    const { app, clean } = createApp({
+      PORT: 3000,
+      DATABASE_URL: "postgres://user:secret@localhost:5432/conduit",
+    });
+    const request = httpClient(app);
+    await clean();
+
+    const createdArticle = await createArticle(request, {
+      title: "The title",
+      description: "description",
+      tagList: ["tag1", "tag2"],
+      body: "body",
+    });
+
+    await favoriteArticle(request, createdArticle.body.article.slug);
+    await unfavoriteArticle(request, createdArticle.body.article.slug);
+  });
   it("Article creation journey", async function () {
     const { app, clean } = createApp({
       PORT: 3000,

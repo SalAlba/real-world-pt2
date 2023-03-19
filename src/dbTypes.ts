@@ -12,6 +12,11 @@ export interface Article {
   description: string;
 }
 
+export interface FavoriteCount {
+  articleId: string;
+  count: number;
+}
+
 export interface Tags {
   name: string;
   articleId: string;
@@ -19,5 +24,6 @@ export interface Tags {
 
 export interface DB {
   article: Article;
+  favorite_count: FavoriteCount;
   tags: Tags;
 }
