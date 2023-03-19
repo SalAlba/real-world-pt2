@@ -23,7 +23,7 @@ export const appCompositionRoot = (config: Config) => {
 
   const favoriteActions = db
     ? sqlFavoritesCompositionRoot(db)
-    : inMemoryFavoritesCompositionRoot(articleActions.articleRepository);
+    : inMemoryFavoritesCompositionRoot(articleActions.articleReadModel);
 
   const favoritesRouter = createFavoritesRouter(favoriteActions);
 

@@ -1,23 +1,26 @@
 import { NotFoundError } from "../../error/NotFoundError";
 import { FavoritesRepository } from "../domain/favorite";
-import { ArticleRepository, Slug } from "../../article/domain/article";
+import { Slug } from "../../article/domain/article";
+import { ArticleReadModel } from "../../article/infrastructure/articleReadModel";
 
 export type FavoriteArticle = (articleSlug: Slug) => Promise<void>;
 export const favoriteArticle =
   (
-    articleRepository: ArticleRepository,
+    articleReadModel: ArticleReadModel,
     favoritesRepository: FavoritesRepository
   ): FavoriteArticle =>
   async (articleSlug) => {
-    const existingArticle = await articleRepository.findBySlug(articleSlug);
+    const existingArticle = await articleReadModel.findArticleIdBySlug(
+      articleSlug
+    );
     if (!existingArticle) {
       throw new NotFoundError(
         `Article with slug ${articleSlug} does not exist`
       );
     }
-    const count = await favoritesRepository.find(existingArticle.id);
+    const count = await favoritesRepository.find(existingArticle);
     await favoritesRepository.update({
-      articleId: existingArticle.id,
+      articleId: existingArticle,
       count: count + 1,
     });
   };
@@ -25,19 +28,21 @@ export const favoriteArticle =
 export type UnfavoriteArticle = (articleSlug: Slug) => Promise<void>;
 export const unfavoriteArticle =
   (
-    articleRepository: ArticleRepository,
+    articleReadModel: ArticleReadModel,
     favoritesRepository: FavoritesRepository
   ): UnfavoriteArticle =>
   async (articleSlug) => {
-    const existingArticle = await articleRepository.findBySlug(articleSlug);
+    const existingArticle = await articleReadModel.findArticleIdBySlug(
+      articleSlug
+    );
     if (!existingArticle) {
       throw new NotFoundError(
         `Article with slug ${articleSlug} does not exist`
       );
     }
-    const count = await favoritesRepository.find(existingArticle.id);
+    const count = await favoritesRepository.find(existingArticle);
     await favoritesRepository.update({
-      articleId: existingArticle.id,
+      articleId: existingArticle,
       count: count - 1,
     });
   };

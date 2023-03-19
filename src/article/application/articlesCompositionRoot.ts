@@ -8,6 +8,8 @@ import { updateArticle } from "./updateArticle";
 import { Kysely, Transaction } from "kysely";
 import { DB } from "../../dbTypes";
 import { WithTx } from "../../shared/sqlTransaction";
+import { sqlArticleReadModel } from "../infrastructure/sqlArticleReadModel";
+import { inMemoryArticleReadModel } from "../infrastructure/inMemoryArticleReadModel";
 
 const create = (db: Transaction<DB>) => {
   const articleRepository = sqlArticleRepository(db);
@@ -26,19 +28,22 @@ export const sqlArticlesCompositionRoot = (
   withTxDb: WithTx<DB>
 ) => {
   const articleRepository = sqlArticleRepository(db);
+  const articleReadModel = sqlArticleReadModel(db);
 
   return {
     create: withTxDb(create),
     update: withTxDb(update),
     articleRepository,
+    articleReadModel,
   };
 };
 
 export const inMemoryArticlesCompositionRoot = () => {
   const articleIdGenerator = incrementIdGenerator(String);
   const articleRepository = inMemoryArticleRepository();
+  const articleReadModel = inMemoryArticleReadModel(articleRepository);
   const create = createArticle(articleRepository, articleIdGenerator, now);
   const update = updateArticle(articleRepository, now);
 
-  return { create, update, articleRepository };
+  return { create, update, articleRepository, articleReadModel };
 };

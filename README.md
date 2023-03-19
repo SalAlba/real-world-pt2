@@ -719,7 +719,36 @@ export const sqlArticlesCompositionRoot = (
 `withTxDb` will create the request scope for each invocation of `create/update` and inject a new transaction on each request.
 After passing current `tx` to the factory functions we'll get transactional `create` and `update`.
 
-## Decinding where to put favorites count
+## Deciding where to put favorites count
 
 If you check https://hyperapp.netlify.app/ there's a favorite/unfavorite icon. In our  simplified version we don't track
 who liked the article, just the total count. Where would you store the total count of favorites for an article?
+
+## Introducing internal read model
+
+In a typical web app we can separate two models:
+* write model 
+* read model 
+
+Read model usually serves the UI display and is often called a view model. 
+But read model can also be used to serve other modules. 
+
+Favorites implementation is using article repository to check if the article exists. But it couples the favorites module
+to the entire repository implementation while it's only interested in a question if the article exists and what is the
+article id when given a slug.
+
+Create sql and in-memory read model matching the following type in **src/article/infrastructure/articleReadModel.ts**
+```typescript
+import { ArticleId, Slug } from "../domain/article";
+
+export type ArticleReadModel = {
+  findArticleIdBySlug(slug: Slug): Promise<ArticleId | null>;
+};
+```
+Hint:
+* in-memory read model will need to read data off the repository
+
+## Replacing repository with read model in favorites
+
+In the favorites module replace the dependency on the article repository with the article read model.
+Run your tests to verify if everything works both with SQL and in-memory variants.

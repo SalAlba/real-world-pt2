@@ -2,25 +2,25 @@ import { Kysely } from "kysely";
 import { DB } from "../../dbTypes";
 import { favoriteArticle, unfavoriteArticle } from "./favoriteArticle";
 import { sqlFavoritesRepository } from "../infrastructure/sqlFavoritesRepository";
-import { sqlArticleRepository } from "../../article/infrastructure/sqlArticleRepository";
-import { ArticleRepository } from "../../article/domain/article";
 import { inMemoryFavoritesRepository } from "../infrastructure/inMemoryFavoritesRepository";
+import { ArticleReadModel } from "../../article/infrastructure/articleReadModel";
+import { sqlArticleReadModel } from "../../article/infrastructure/sqlArticleReadModel";
 
 export const sqlFavoritesCompositionRoot = (db: Kysely<DB>) => {
-  const articleRepository = sqlArticleRepository(db);
+  const articleReadModel = sqlArticleReadModel(db);
   const favoritesRepository = sqlFavoritesRepository(db);
   return {
-    favorite: favoriteArticle(articleRepository, favoritesRepository),
-    unfavorite: unfavoriteArticle(articleRepository, favoritesRepository),
+    favorite: favoriteArticle(articleReadModel, favoritesRepository),
+    unfavorite: unfavoriteArticle(articleReadModel, favoritesRepository),
   };
 };
 
 export const inMemoryFavoritesCompositionRoot = (
-  articleRepository: ArticleRepository
+  articleReadModel: ArticleReadModel
 ) => {
   const favoritesRepository = inMemoryFavoritesRepository();
   return {
-    favorite: favoriteArticle(articleRepository, favoritesRepository),
-    unfavorite: unfavoriteArticle(articleRepository, favoritesRepository),
+    favorite: favoriteArticle(articleReadModel, favoritesRepository),
+    unfavorite: unfavoriteArticle(articleReadModel, favoritesRepository),
   };
 };
