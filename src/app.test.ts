@@ -32,12 +32,12 @@ const getArticle = (request: Request, slug: string) =>
 
 describe("Conduit", function () {
   it("Article creation journey", async function () {
-    const request = httpClient(
-      createApp({
-        PORT: 3000,
-        DATABASE_URL: "postgres://user:secret@localhost:5432/conduit",
-      })
-    );
+    const { app, clean } = createApp({
+      PORT: 3000,
+      DATABASE_URL: "postgres://user:secret@localhost:5432/conduit",
+    });
+    const request = httpClient(app);
+    await clean();
 
     const createdArticle = await createArticle(request, {
       title: "The title",

@@ -615,3 +615,14 @@ responsibilities:
 * domain
 * infrastructure
 
+## Cleaning data before each component test
+
+If you run our component test separately from the other tests, it will accumulate data from the previous test runs.
+Try to design a way for cleaning the test data before each test run, while still having an option to investigate the
+DB state after a test run.
+
+## Extracting application composition root
+
+Our **app.ts** is accumulating logic for building dependencies at the high level. Let's extract those into another composition
+root. 
+
