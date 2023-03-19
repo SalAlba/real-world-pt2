@@ -1,8 +1,11 @@
-import {Article, ArticleRepository} from "./article";
+import { Article, ArticleRepository } from "./article";
 import assert from "assert";
 
-
-export const articleRepositoryContract = (variant: string, articleRepositoryFactory: () => ArticleRepository, clean: () => Promise<void>) => {
+export const articleRepositoryContract = (
+  variant: string,
+  articleRepositoryFactory: () => ArticleRepository,
+  clean: () => Promise<void>
+) => {
   describe(`Article repository contract: ${variant}`, function () {
     beforeEach(async () => {
       await clean();
@@ -58,4 +61,3 @@ export const articleRepositoryContract = (variant: string, articleRepositoryFact
     });
   });
 };
-

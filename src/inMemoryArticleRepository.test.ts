@@ -1,10 +1,12 @@
-import {articleRepositoryContract} from "./articleRepositoryContract.test";
-import {inMemoryArticleRepository} from "./inMemoryArticleRepository";
+import { articleRepositoryContract } from "./articleRepositoryContract.test";
+import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
 
+const clean = async () => {};
 
-const clean = async () => {;
-};
-
-articleRepositoryContract("in-memory", () => {
-  return inMemoryArticleRepository();
-}, clean);
+articleRepositoryContract(
+  "in-memory",
+  () => {
+    return inMemoryArticleRepository();
+  },
+  clean
+);

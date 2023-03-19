@@ -25,6 +25,7 @@ Saved HTTP requests for curl, httpie
 * sql repository integration tests
 * contract for repo
 * sql repo injection
+* config abstraction
 * clean DB
 * stop db
 * composition root for module

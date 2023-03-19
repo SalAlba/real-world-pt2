@@ -1,5 +1,5 @@
 import httpClient from "supertest";
-import { app } from "./app";
+import { createApp } from "./app";
 import assert from "assert";
 import omit from "lodash.omit";
 
@@ -32,7 +32,13 @@ const getArticle = (request: Request, slug: string) =>
 
 describe("Conduit", function () {
   it("Article creation journey", async function () {
-    const request = httpClient(app);
+    const request = httpClient(
+      createApp({
+        PORT: 3000,
+        DATABASE_URL:
+          "postgres://user:secret@localhost:5432/conduit",
+      })
+    );
 
     const createdArticle = await createArticle(request, {
       title: "The title",

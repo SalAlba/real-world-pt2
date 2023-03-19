@@ -531,3 +531,39 @@ Modify your scripts:
 all the env vars upfront. You can also inspect **.mocharc.js** to see how mocha allows to preload the env vars from a file.
 For mocha I prefer to have a configuration file since I run my tests both from the CLI and from my IDE and both should respect the
 configuration file.
+
+## Modelling config
+
+Currently `process.env` is spread across the entire codebase. We'd like to centralize config setting at the entry point to our application
+since config will be used everywhere. As an extra benefit we'd like to parse the config at the startup time the same way we 
+parse request body in our controllers/routers.
+
+Create **src/config.ts**
+```typescript
+import { z } from "zod";
+
+const Config = z.object({
+    PORT: z.coerce.number(),
+    DATABASE_URL: z.string().optional(),
+});
+export type Config = z.infer<typeof Config>;
+
+export const config = Config.parse(process.env);
+```
+
+## Injecting config to the application and router
+
+Read the config in the **src/server.ts** and pass it to other places that need it.
+
+```typescript
+import { createApp } from "./app";
+import { config } from "./config";
+
+const port = config.PORT;
+const app = createApp(config);
+app.listen(port, () => {
+  console.log(`Listening on ${port}`);
+});
+```
+Change your code so that you cna inject the config to your application and application can inject the config to the router.
+Remember about changing our component test so that it respects the injection of config.
