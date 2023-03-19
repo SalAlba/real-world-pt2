@@ -23,7 +23,11 @@ Saved HTTP requests for curl, httpie
 * generate types
 * sql repository
 * sql repository integration tests
+* contract for repo
+* sql repo injection
+* clean DB
 * composition root for module
+* component tests depends on config
 * feature driven arch
 * favorites - separate models
 * read model
@@ -36,6 +40,8 @@ Saved HTTP requests for curl, httpie
 * read model articles by tag, global
 * domain logic: fav articles longer than 100 chars and with at least one tag
 * optimistic concurrency
+* GH action
+* Dockerfile
 
 
 Prerequisites:

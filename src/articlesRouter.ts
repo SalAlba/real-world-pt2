@@ -1,19 +1,22 @@
-import { Router } from "express";
-import makeSlug from "slug";
+import {Router} from "express";
 import omit from "lodash.omit";
-import { NotFoundError } from "./NotFoundError";
-import merge from "lodash.merge";
-import { incrementIdGenerator } from "./incrementIdGenerator";
-import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
-import { createArticle } from "./createArticle";
-import { ArticleInput } from "./parseArticleInput";
-import { now } from "./clock";
+import {NotFoundError} from "./NotFoundError";
+import {incrementIdGenerator} from "./incrementIdGenerator";
+import {inMemoryArticleRepository} from "./inMemoryArticleRepository";
+import {createArticle} from "./createArticle";
+import {ArticleInput} from "./parseArticleInput";
+import {now} from "./clock";
 import {updateArticle} from "./updateArticle";
+import {sqlArticleRepository} from "./sqlArticleRepository";
+import {createDb} from "./db";
+import {uuidGenerator} from "./uuidGenerator";
 
 export const articlesRouter = Router();
 
-const articleIdGenerator = incrementIdGenerator(String);
-const articleRepository = inMemoryArticleRepository();
+const articleIdGenerator = process.env.DATABASE_URL ? uuidGenerator : incrementIdGenerator(String);
+const articleRepository = process.env.DATABASE_URL ? sqlArticleRepository(createDb(
+    process.env.DATABASE_URL
+)) : inMemoryArticleRepository();
 
 articlesRouter.post("/api/articles", async (req, res, next) => {
   const input = ArticleInput.parse(req.body.article);

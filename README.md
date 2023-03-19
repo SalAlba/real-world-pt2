@@ -480,3 +480,37 @@ Some hints:
 
 We had to create almost identical tests twice. Try to remove duplication between repositories and try to introduce a contract
 for what it takes to be an article repository. This contract should serve us well if we decide to implement another variant e.g. MongoDB.
+
+## Choosing SQL mode vs in-memory mode
+
+It would be very convenient if our application started in SQL mode when the env var for DB is set and use in-memory mode otherwise.
+
+In the **src/articlesRouter.ts**
+```typescript
+const articleRepository = process.env.DATABASE_URL ? sqlArticleRepository(createDb(
+    process.env.DATABASE_URL
+)) : inMemoryArticleRepository();
+```
+
+Let's test the setting by changing **package.json**
+```
+    "start": " DATABASE_URL=postgres://unleash_user:passord@localhost:5432/articles ts-node src/server.ts",
+    "test": "DATABASE_URL=postgres://unleash_user:passord@localhost:5432/articles mocha --exit 'src/**/*.test.ts'",
+```
+
+There's a problem in the test command. In the SQL mode the id of article is expected to be uuid.
+
+## Injecting real uuid provider
+
+Create **src/uuidGenerator.ts**
+```typescript
+import { v4 as uuidv4 } from "uuid";
+import { IdGenerator } from "./idGenerator";
+
+export const uuidGenerator: IdGenerator = uuidv4;
+```
+Inject this provide in **src/articlesRouter.ts** depending on the DATABASE_URL config.
+
+## Reading env vars from file
+
+Currently we're updating the **package.json** scripts with env vars. But it's not very scalable approach.
