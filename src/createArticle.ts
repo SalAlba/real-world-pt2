@@ -5,13 +5,14 @@ import { IdGenerator } from "./idGenerator";
 import { Clock } from "./clock";
 import { ArticleInput } from "./parseArticleInput";
 
+export type CreateArticle = (input: ArticleInput) => Promise<Article>;
 export const createArticle =
   (
     articleRepository: ArticleRepository,
     articleIdGenerator: IdGenerator,
     clock: Clock
-  ) =>
-  async (input: ArticleInput) => {
+  ): CreateArticle =>
+  async (input) => {
     const now = clock();
     const article: Article = {
       body: input.body,

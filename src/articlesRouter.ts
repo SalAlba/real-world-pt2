@@ -1,35 +1,26 @@
 import { Router } from "express";
 import omit from "lodash.omit";
 import { NotFoundError } from "./NotFoundError";
-import { incrementIdGenerator } from "./incrementIdGenerator";
-import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
-import { createArticle } from "./createArticle";
 import { ArticleInput } from "./parseArticleInput";
-import { now } from "./clock";
-import { updateArticle } from "./updateArticle";
-import { sqlArticleRepository } from "./sqlArticleRepository";
-import { createDb } from "./db";
-import { uuidGenerator } from "./uuidGenerator";
-import { Config } from "./config";
+import { CreateArticle } from "./createArticle";
+import { UpdateArticle } from "./updateArticle";
+import { ArticleRepository } from "./article";
 
-export const createArticlesRouter = (config: Config) => {
+export const createArticlesRouter = ({
+  create,
+  update,
+  articleRepository,
+}: {
+  create: CreateArticle;
+  update: UpdateArticle;
+  articleRepository: ArticleRepository;
+}) => {
   const articlesRouter = Router();
-
-  const articleIdGenerator = config.DATABASE_URL
-    ? uuidGenerator
-    : incrementIdGenerator(String);
-  const articleRepository = config.DATABASE_URL
-    ? sqlArticleRepository(createDb(config.DATABASE_URL))
-    : inMemoryArticleRepository();
 
   articlesRouter.post("/api/articles", async (req, res, next) => {
     const input = ArticleInput.parse(req.body.article);
 
-    const article = await createArticle(
-      articleRepository,
-      articleIdGenerator,
-      now
-    )(input);
+    const article = await create(input);
 
     res.json({ article: omit(article, "id") });
   });
@@ -38,10 +29,7 @@ export const createArticlesRouter = (config: Config) => {
     const articleInput = req.body.article;
     const slug = req.params.slug;
 
-    const article = await updateArticle(articleRepository, now)(
-      slug,
-      articleInput
-    );
+    const article = await update(slug, articleInput);
 
     res.json({ article: omit(article, "id") });
   });

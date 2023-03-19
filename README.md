@@ -567,3 +567,34 @@ app.listen(port, () => {
 ```
 Change your code so that you cna inject the config to your application and application can inject the config to the router.
 Remember about changing our component test so that it respects the injection of config.
+
+## Introducing use case composition root
+
+**articleRouter.ts** has 2 responsibilities. It sets up the routes/controllers but also builds a graph of objects.
+Let's split the graph of objects into a [composition root](https://blog.ploeh.dk/2011/07/28/CompositionRoot/).
+
+Here's the structure we want to have in **src/app.ts**
+```typescript
+const db = config.DATABASE_URL ? createDb(config.DATABASE_URL) : null;
+const articleActions = db
+    ? sqlArticlesCompositionRoot(db)
+    : inMemoryArticlesCompositionRoot();
+app.use(createArticlesRouter(articleActions));
+```
+
+And the actual router should accept all the actions and repository as dependencies:
+```typescript
+export const createArticlesRouter = ({
+  create,
+  update,
+  articleRepository,
+}: {
+  create: CreateArticle;
+  update: UpdateArticle;
+  articleRepository: ArticleRepository;
+}) => {
+    // const article = await create(input);
+    // const article = await update(slug, articleInput);
+    // const existingArticle = await articleRepository.findBySlug(slug);
+};
+```

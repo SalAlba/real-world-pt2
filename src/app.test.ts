@@ -35,8 +35,7 @@ describe("Conduit", function () {
     const request = httpClient(
       createApp({
         PORT: 3000,
-        DATABASE_URL:
-          "postgres://user:secret@localhost:5432/conduit",
+        DATABASE_URL: "postgres://user:secret@localhost:5432/conduit",
       })
     );
 
