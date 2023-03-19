@@ -752,3 +752,38 @@ Hint:
 
 In the favorites module replace the dependency on the article repository with the article read model.
 Run your tests to verify if everything works both with SQL and in-memory variants.
+
+## Implementing view model (external read model)
+
+Modify favoritesCount in **app.test.ts**: 
+```typescript
+    assert.deepStrictEqual(
+      omit(articleResult.body.article, "createdAt", "updatedAt"),
+      {
+        body: "body",
+        description: "description",
+        tagList: ["tag1", "tag2"],
+        title: "The title",
+        slug: "the-title",
+        favoritesCount: 0,
+      }
+    );
+```
+When asking about the article we should show data from article and favorite modules.
+
+Here's the expected **src/article/infrastructure/articleReadModel.ts**
+```typescript
+import { Article, ArticleId, Slug } from "../domain/article";
+
+export type ArticleView = {
+  article: Omit<Article, "id"> & { favoritesCount: number };
+};
+
+export type ArticleReadModel = {
+  findArticleIdBySlug(slug: Slug): Promise<ArticleId | null>;
+  findArticleBySlug(slug: Slug): Promise<ArticleView | null>;
+};
+```
+
+Start by implementing the SQL repository. You can also try to implement the in-memory version.
+Together we'll live code the solution for plugging it into our composition roots.

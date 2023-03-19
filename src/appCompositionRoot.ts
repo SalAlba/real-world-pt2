@@ -11,28 +11,46 @@ import {
   sqlFavoritesCompositionRoot,
 } from "./favorite/application/favoriteActionsCompositionRoot";
 import { createFavoritesRouter } from "./favorite/api/favoritesRouter";
+import { inMemoryArticleRepository } from "./article/infrastructure/inMemoryArticleRepository";
+import { inMemoryFavoritesRepository } from "./favorite/infrastructure/inMemoryFavoritesRepository";
+import { inMemoryArticleReadModel } from "./article/infrastructure/inMemoryArticleReadModel";
+import { sqlArticleReadModel } from "./article/infrastructure/sqlArticleReadModel";
 
 export const appCompositionRoot = (config: Config) => {
   const db = config.DATABASE_URL ? createDb(config.DATABASE_URL) : null;
 
-  const articleActions = db
-    ? sqlArticlesCompositionRoot(db, transactional(db))
-    : inMemoryArticlesCompositionRoot();
-
-  const articlesRouter = createArticlesRouter(articleActions);
-
-  const favoriteActions = db
-    ? sqlFavoritesCompositionRoot(db)
-    : inMemoryFavoritesCompositionRoot(articleActions.articleReadModel);
-
-  const favoritesRouter = createFavoritesRouter(favoriteActions);
-
-  const clean = async () => {
-    if (db) {
+  if (db) {
+    const clean = async () => {
       await db.deleteFrom("article").execute();
       await db.deleteFrom("favorite_count").execute();
-    }
-  };
-
-  return { articlesRouter, favoritesRouter, clean };
+    };
+    const articleActions = sqlArticlesCompositionRoot(db, transactional(db));
+    const favoriteActions = sqlFavoritesCompositionRoot(db);
+    const articleReadModel = sqlArticleReadModel(db);
+    return {
+      articlesRouter: createArticlesRouter({
+        ...articleActions,
+        articleReadModel,
+      }),
+      favoritesRouter: createFavoritesRouter(favoriteActions),
+      clean,
+    };
+  } else {
+    const articleRepository = inMemoryArticleRepository();
+    const favoritesRepository = inMemoryFavoritesRepository();
+    const articleReadModel = inMemoryArticleReadModel(
+      articleRepository,
+      favoritesRepository
+    );
+    const articleActions = inMemoryArticlesCompositionRoot(articleRepository);
+    const favoriteActions = inMemoryFavoritesCompositionRoot(articleReadModel);
+    return {
+      articlesRouter: createArticlesRouter({
+        ...articleActions,
+        articleReadModel,
+      }),
+      favoritesRouter: createFavoritesRouter(favoriteActions),
+      clean: () => {},
+    };
+  }
 };

@@ -92,6 +92,7 @@ describe("Conduit", function () {
         tagList: ["tag1", "tag2"],
         title: "The title",
         slug: "the-title",
+        favoritesCount: 0,
       }
     );
 
