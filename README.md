@@ -598,3 +598,11 @@ export const createArticlesRouter = ({
     // const existingArticle = await articleRepository.findBySlug(slug);
 };
 ```
+
+## Organizing code into directories
+
+I like to organize my code around business capabilities first and agains technical responsibilities second.
+So let's create **articles** directory and put everything related to article there.
+
+Then let's put all the shared code into **shared** dir and all error handling related code in **error**.
+

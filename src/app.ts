@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
-import { createArticlesRouter } from "./articlesRouter";
-import { errorHandler, notFoundHandler } from "./errorHandler";
+import { createArticlesRouter } from "./article/articlesRouter";
+import { errorHandler, notFoundHandler } from "./error/errorHandler";
 import { Config } from "./config";
 import { createDb } from "./db";
 import {
   inMemoryArticlesCompositionRoot,
   sqlArticlesCompositionRoot,
-} from "./articlesCompositionRoot";
+} from "./article/articlesCompositionRoot";
 
 export const createApp = (config: Config) => {
   const app = express();

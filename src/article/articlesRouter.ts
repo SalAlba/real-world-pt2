@@ -1,6 +1,6 @@
 import { Router } from "express";
 import omit from "lodash.omit";
-import { NotFoundError } from "./NotFoundError";
+import { NotFoundError } from "../error/NotFoundError";
 import { ArticleInput } from "./parseArticleInput";
 import { CreateArticle } from "./createArticle";
 import { UpdateArticle } from "./updateArticle";

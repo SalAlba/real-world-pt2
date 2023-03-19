@@ -1,4 +1,4 @@
-import { createDb } from "./db";
+import { createDb } from "../db";
 import { sqlArticleRepository } from "./sqlArticleRepository";
 import { articleRepositoryContract } from "./articleRepositoryContract.test";
 

@@ -1,6 +1,6 @@
 import { ArticleRepository } from "./article";
 import { Kysely } from "kysely";
-import { DB } from "./dbTypes";
+import { DB } from "../dbTypes";
 
 export const sqlArticleRepository = (db: Kysely<DB>): ArticleRepository => {
   return {

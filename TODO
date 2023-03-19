@@ -30,6 +30,7 @@ Saved HTTP requests for curl, httpie
 * clean DB
 * stop db
 * feature driven arch
+* stop DB
 * favorites - separate models
 * read model
 * parse read model, robustness principle
