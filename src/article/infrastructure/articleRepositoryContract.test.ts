@@ -1,4 +1,4 @@
-import { Article, ArticleRepository } from "./article";
+import { Article, ArticleRepository } from "../domain/article";
 import assert from "assert";
 
 export const articleRepositoryContract = (

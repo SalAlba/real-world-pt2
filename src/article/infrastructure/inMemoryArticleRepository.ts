@@ -1,4 +1,4 @@
-import { Article, ArticleRepository } from "./article";
+import { Article, ArticleRepository } from "../domain/article";
 
 export const inMemoryArticleRepository = (): ArticleRepository => {
   const articles: Record<string, Article> = {};

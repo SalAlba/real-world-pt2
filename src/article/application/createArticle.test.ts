@@ -1,6 +1,6 @@
 import { createArticle } from "./createArticle";
 import assert from "assert";
-import { inMemoryArticleRepository } from "./inMemoryArticleRepository";
+import { inMemoryArticleRepository } from "../infrastructure/inMemoryArticleRepository";
 import omit from "lodash.omit";
 
 describe("Create article", function () {

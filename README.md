@@ -599,10 +599,19 @@ export const createArticlesRouter = ({
 };
 ```
 
-## Organizing code into directories
+## Organizing code into directories: feature-driven architecture
 
-I like to organize my code around business capabilities first and agains technical responsibilities second.
+I like to organize my code around business capabilities first and against technical responsibilities second.
 So let's create **articles** directory and put everything related to article there.
 
 Then let's put all the shared code into **shared** dir and all error handling related code in **error**.
+
+## Organizing code into directories: technology-driven architecture
+
+Once we're done with the feature-driven organization we can go inside article dir and organize code around technical
+responsibilities:
+* api
+* application
+* domain
+* infrastructure
 
