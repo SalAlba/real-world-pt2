@@ -13,6 +13,7 @@ import {uuidGenerator} from "./uuidGenerator";
 
 export const articlesRouter = Router();
 
+console.log(process.env.DATABASE_URL);
 const articleIdGenerator = process.env.DATABASE_URL ? uuidGenerator : incrementIdGenerator(String);
 const articleRepository = process.env.DATABASE_URL ? sqlArticleRepository(createDb(
     process.env.DATABASE_URL

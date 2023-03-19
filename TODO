@@ -26,6 +26,7 @@ Saved HTTP requests for curl, httpie
 * contract for repo
 * sql repo injection
 * clean DB
+* stop db
 * composition root for module
 * component tests depends on config
 * feature driven arch

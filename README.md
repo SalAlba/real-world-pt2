@@ -514,3 +514,20 @@ Inject this provide in **src/articlesRouter.ts** depending on the DATABASE_URL c
 ## Reading env vars from file
 
 Currently we're updating the **package.json** scripts with env vars. But it's not very scalable approach.
+
+Create **.env**
+```
+PORT=3000
+DATABASE_URL=postgres://user:secret@localhost:5432/conduit
+```
+
+Modify your scripts:
+```
+    "start": "ts-node -r dotenv/config src/server.ts",
+    "test": "mocha --exit 'src/**/*.test.ts'",
+```
+
+[-r preload option](https://nodejs.org/api/cli.html#-r---require-module) allows to run dotenv module before our app starts. It sets
+all the env vars upfront. You can also inspect **.mocharc.js** to see how mocha allows to preload the env vars from a file.
+For mocha I prefer to have a configuration file since I run my tests both from the CLI and from my IDE and both should respect the
+configuration file.
