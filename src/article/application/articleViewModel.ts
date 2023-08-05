@@ -1,10 +1,9 @@
-import { Article, ArticleId, Slug } from "../domain/article";
+import {Article, Slug} from "../domain/article";
 
 export type ArticleView = {
   article: Omit<Article, "id"> & { favoritesCount: number };
 };
 
-export type ArticleReadModel = {
-  findArticleIdBySlug(slug: Slug): Promise<ArticleId | null>;
+export type ArticleViewModel = {
   findArticleBySlug(slug: Slug): Promise<ArticleView | null>;
 };

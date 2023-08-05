@@ -1,7 +1,7 @@
 import { NotFoundError } from "../../error/NotFoundError";
 import { FavoritesRepository } from "../domain/favorite";
 import { Slug } from "../../article/domain/article";
-import { ArticleReadModel } from "../../article/infrastructure/articleReadModel";
+import { ArticleReadModel } from "../../article/application/articleReadModel";
 
 export type FavoriteArticle = (articleSlug: Slug) => Promise<void>;
 export const favoriteArticle =

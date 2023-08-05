@@ -7,16 +7,17 @@ import {
 } from "../application/parseArticleInput";
 import { CreateArticle } from "../application/createArticle";
 import { UpdateArticle } from "../application/updateArticle";
-import { ArticleReadModel } from "../infrastructure/articleReadModel";
+import { ArticleReadModel } from "../application/articleReadModel";
+import { ArticleViewModel } from "../application/articleViewModel";
 
 export const createArticlesRouter = ({
   create,
   update,
-  articleReadModel,
+  articleViewModel,
 }: {
   create: CreateArticle;
   update: UpdateArticle;
-  articleReadModel: ArticleReadModel;
+  articleViewModel: ArticleViewModel;
 }) => {
   const articlesRouter = Router();
 
@@ -40,7 +41,7 @@ export const createArticlesRouter = ({
   articlesRouter.get("/api/articles/:slug", async (req, res, next) => {
     const slug = req.params.slug;
 
-    const existingArticle = await articleReadModel.findArticleBySlug(slug);
+    const existingArticle = await articleViewModel.findArticleBySlug(slug);
     if (!existingArticle) {
       throw new NotFoundError(`Article with slug ${slug} does not exist`);
     }

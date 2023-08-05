@@ -3,7 +3,7 @@ import { DB } from "../../dbTypes";
 import { favoriteArticle, unfavoriteArticle } from "./favoriteArticle";
 import { sqlFavoritesRepository } from "../infrastructure/sqlFavoritesRepository";
 import { inMemoryFavoritesRepository } from "../infrastructure/inMemoryFavoritesRepository";
-import { ArticleReadModel } from "../../article/infrastructure/articleReadModel";
+import { ArticleReadModel } from "../../article/application/articleReadModel";
 import { sqlArticleReadModel } from "../../article/infrastructure/sqlArticleReadModel";
 
 export const sqlFavoritesCompositionRoot = (db: Kysely<DB>) => {
