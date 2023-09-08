@@ -8,6 +8,7 @@ import {
 import { CreateArticle } from "../application/createArticle";
 import { UpdateArticle } from "../application/updateArticle";
 import { ArticleViewModel } from "../application/articleViewModel";
+import {articlePath} from "./paths";
 
 export const createArticlesRouter = ({
   create,
@@ -25,10 +26,10 @@ export const createArticlesRouter = ({
 
     const article = await create(input);
 
-    res.redirect(`/api/articles/${article.slug}`);
+    res.redirect(articlePath({slug: article.slug}));
   });
 
-  articlesRouter.put("/api/articles/:slug", async (req, res, next) => {
+  articlesRouter.put(articlePath.pattern, async (req, res, next) => {
     const articleInput = UpdateArticleInput.parse(req.body.article);
     const slug = req.params.slug;
 
