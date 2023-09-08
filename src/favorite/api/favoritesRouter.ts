@@ -3,6 +3,8 @@ import {
   FavoriteArticle,
   UnfavoriteArticle,
 } from "../application/favoriteArticle";
+import {favoritePath} from "./paths";
+import {articlePath} from "../../article/api/paths";
 
 export const createFavoritesRouter = ({
   favorite,
@@ -13,14 +15,14 @@ export const createFavoritesRouter = ({
 }) => {
   const app = Router();
 
-  app.post("/api/articles/:slug/favorite", async (req, res, next) => {
+  app.post(favoritePath.pattern, async (req, res, next) => {
     await favorite(req.params.slug);
-    res.redirect(`/api/articles/${req.params.slug}`);
+    res.redirect(articlePath({ slug: req.params.slug }));
   });
 
-  app.delete("/api/articles/:slug/favorite", async (req, res, next) => {
+  app.delete(favoritePath.pattern, async (req, res, next) => {
     await unfavorite(req.params.slug);
-    res.redirect(`/api/articles/${req.params.slug}`);
+    res.redirect(articlePath({ slug: req.params.slug }));
   });
 
   return app;

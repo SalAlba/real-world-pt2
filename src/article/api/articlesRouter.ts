@@ -8,7 +8,7 @@ import {
 import { CreateArticle } from "../application/createArticle";
 import { UpdateArticle } from "../application/updateArticle";
 import { ArticleViewModel } from "../application/articleViewModel";
-import {articlePath} from "./paths";
+import {articlePath, articlesPath} from "./paths";
 
 export const createArticlesRouter = ({
   create,
@@ -21,7 +21,7 @@ export const createArticlesRouter = ({
 }) => {
   const articlesRouter = Router();
 
-  articlesRouter.post("/api/articles", async (req, res, next) => {
+  articlesRouter.post(articlesPath.pattern, async (req, res, next) => {
     const input = ArticleInput.parse(req.body.article);
 
     const article = await create(input);
@@ -35,10 +35,10 @@ export const createArticlesRouter = ({
 
     const article = await update(slug, articleInput);
 
-    res.redirect(`/api/articles/${article.slug}`);
+    res.redirect(articlePath({slug: article.slug}));
   });
 
-  articlesRouter.get("/api/articles/:slug", async (req, res, next) => {
+  articlesRouter.get(articlePath.pattern, async (req, res, next) => {
     const slug = req.params.slug;
 
     const existingArticle = await articleViewModel.findArticleBySlug(slug);
