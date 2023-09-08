@@ -31,9 +31,9 @@ const getArticle = (request: Request, slug: string) =>
   request.get(`/api/articles/${slug}`).expect(200);
 
 const favoriteArticle = (request: Request, slug: string) =>
-  request.post(`/api/articles/${slug}/favorite`).expect(204);
+  request.post(`/api/articles/${slug}/favorite`).expect(200);
 const unfavoriteArticle = (request: Request, slug: string) =>
-  request.delete(`/api/articles/${slug}/favorite`).expect(204);
+  request.delete(`/api/articles/${slug}/favorite`).expect(200);
 
 describe("Conduit", function () {
   it("Favorite article", async function () {
@@ -49,10 +49,15 @@ describe("Conduit", function () {
       description: "description",
       tagList: ["tag1", "tag2"],
       body: "body",
-    });
+    }).redirects(1);
 
-    await favoriteArticle(request, createdArticle.body.article.slug);
-    await unfavoriteArticle(request, createdArticle.body.article.slug);
+    await favoriteArticle(request, createdArticle.body.article.slug).redirects(
+      1
+    );
+    await unfavoriteArticle(
+      request,
+      createdArticle.body.article.slug
+    ).redirects(1);
   });
   it("Article creation journey", async function () {
     const { app, clean } = createApp({
@@ -69,13 +74,14 @@ describe("Conduit", function () {
       body: "body",
       // @ts-ignore
       invalidField: "ignore me",
-    });
+    }).redirects(1);
 
     assert.deepStrictEqual(
       omit(createdArticle.body.article, "createdAt", "updatedAt"),
       {
         body: "body",
         description: "description",
+        favoritesCount: 0,
         slug: "the-title",
         tagList: ["tag1", "tag2"],
         title: "The title",
@@ -101,7 +107,7 @@ describe("Conduit", function () {
       description: "description updated",
       tagList: ["tag1", "tag3"],
       body: "body updated",
-    });
+    }).redirects(1);
 
     assert.deepStrictEqual(
       omit(updatedArticle.body.article, "createdAt", "updatedAt"),
@@ -109,6 +115,7 @@ describe("Conduit", function () {
         body: "body updated",
         description: "description updated",
         tagList: ["tag1", "tag3"],
+        favoritesCount: 0,
         title: "The title updated",
         slug: "the-title-updated",
       }

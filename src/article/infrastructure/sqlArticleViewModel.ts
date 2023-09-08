@@ -1,7 +1,7 @@
 import { Kysely } from "kysely";
 import { DB } from "../../dbTypes";
 import { ArticleViewModel } from "../application/articleViewModel";
-import {ArticleView} from "./parseArticleOutput";
+import { ArticleView } from "./parseArticleOutput";
 
 export const sqlArticleViewModel = (db: Kysely<DB>): ArticleViewModel => {
   return {

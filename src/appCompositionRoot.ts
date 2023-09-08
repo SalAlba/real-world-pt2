@@ -1,21 +1,21 @@
-import {createDb} from "./db";
+import { createDb } from "./db";
 import {
   inMemoryArticlesCompositionRoot,
   sqlArticlesCompositionRoot,
 } from "./article/application/articlesCompositionRoot";
-import {Config} from "./config";
-import {createArticlesRouter} from "./article/api/articlesRouter";
-import {transactional} from "./shared/sqlTransaction";
+import { Config } from "./config";
+import { createArticlesRouter } from "./article/api/articlesRouter";
+import { transactional } from "./shared/sqlTransaction";
 import {
   inMemoryFavoritesCompositionRoot,
   sqlFavoritesCompositionRoot,
 } from "./favorite/application/favoriteActionsCompositionRoot";
-import {createFavoritesRouter} from "./favorite/api/favoritesRouter";
-import {inMemoryArticleRepository} from "./article/infrastructure/inMemoryArticleRepository";
-import {inMemoryFavoritesRepository} from "./favorite/infrastructure/inMemoryFavoritesRepository";
-import {inMemoryArticleReadModel} from "./article/infrastructure/inMemoryArticleReadModel";
-import {sqlArticleViewModel} from "./article/infrastructure/sqlArticleViewModel";
-import {inMemoryArticleViewModel} from "./article/infrastructure/inMemoryArticleViewModel";
+import { createFavoritesRouter } from "./favorite/api/favoritesRouter";
+import { inMemoryArticleRepository } from "./article/infrastructure/inMemoryArticleRepository";
+import { inMemoryFavoritesRepository } from "./favorite/infrastructure/inMemoryFavoritesRepository";
+import { inMemoryArticleReadModel } from "./article/infrastructure/inMemoryArticleReadModel";
+import { sqlArticleViewModel } from "./article/infrastructure/sqlArticleViewModel";
+import { inMemoryArticleViewModel } from "./article/infrastructure/inMemoryArticleViewModel";
 
 export const appCompositionRoot = (config: Config) => {
   const db = config.DATABASE_URL ? createDb(config.DATABASE_URL) : null;

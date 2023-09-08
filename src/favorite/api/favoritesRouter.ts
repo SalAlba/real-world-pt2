@@ -15,12 +15,12 @@ export const createFavoritesRouter = ({
 
   app.post("/api/articles/:slug/favorite", async (req, res, next) => {
     await favorite(req.params.slug);
-    res.sendStatus(204);
+    res.redirect(`/api/articles/${req.params.slug}`);
   });
 
   app.delete("/api/articles/:slug/favorite", async (req, res, next) => {
     await unfavorite(req.params.slug);
-    res.sendStatus(204);
+    res.redirect(`/api/articles/${req.params.slug}`);
   });
 
   return app;

@@ -1,4 +1,4 @@
-import {Article, Slug} from "../domain/article";
+import { Article, Slug } from "../domain/article";
 
 export type ArticleView = {
   article: Omit<Article, "id"> & { favoritesCount: number };

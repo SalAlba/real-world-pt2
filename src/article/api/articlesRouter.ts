@@ -7,7 +7,6 @@ import {
 } from "../application/parseArticleInput";
 import { CreateArticle } from "../application/createArticle";
 import { UpdateArticle } from "../application/updateArticle";
-import { ArticleReadModel } from "../application/articleReadModel";
 import { ArticleViewModel } from "../application/articleViewModel";
 
 export const createArticlesRouter = ({
@@ -26,7 +25,7 @@ export const createArticlesRouter = ({
 
     const article = await create(input);
 
-    res.json({ article: omit(article, "id") });
+    res.redirect(`/api/articles/${article.slug}`);
   });
 
   articlesRouter.put("/api/articles/:slug", async (req, res, next) => {
@@ -35,7 +34,7 @@ export const createArticlesRouter = ({
 
     const article = await update(slug, articleInput);
 
-    res.json({ article: omit(article, "id") });
+    res.redirect(`/api/articles/${article.slug}`);
   });
 
   articlesRouter.get("/api/articles/:slug", async (req, res, next) => {
