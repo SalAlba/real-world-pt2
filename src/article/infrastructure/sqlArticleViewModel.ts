@@ -1,6 +1,7 @@
 import { Kysely } from "kysely";
 import { DB } from "../../dbTypes";
 import { ArticleViewModel } from "../application/articleViewModel";
+import {ArticleView} from "./parseArticleOutput";
 
 export const sqlArticleViewModel = (db: Kysely<DB>): ArticleViewModel => {
   return {
@@ -17,13 +18,13 @@ export const sqlArticleViewModel = (db: Kysely<DB>): ArticleViewModel => {
         .where("tags.articleId", "=", result.id)
         .select(["tags.name"])
         .execute();
-      return {
+      return ArticleView.parse({
         article: {
           ...result,
           favoritesCount: result.count || 0,
           tagList: tags.map((item) => item.name),
         },
-      };
+      });
     },
   };
 };
